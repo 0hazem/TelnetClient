@@ -1,4 +1,6 @@
 import java.net.SocketException;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class RouterCommands {
 
@@ -59,18 +61,56 @@ public class RouterCommands {
          return false;
         }
 
+        public boolean firewall (String level) {
+            String result = telnet.sendCommand("set firewall " + level);
+                    if (result.contains("Fail"))
+                        return false;
+            return true;
+        }
+
+        public  RouterInfo displayInfo() {
+
+            String result = telnet.sendCommand("display deviceinfo");
+            Pattern pattern = Pattern.compile("(.+):\\s+(.+)");
+            Matcher matcher = pattern.matcher(result);
+            RouterInfo routerInfo = new RouterInfo();
+            while (matcher.find()) {
+
+                String name = matcher.group(1);
+                String value = matcher.group(2);
+                System.out.println(name + " ==== " + name);
+
+                if(name.equals("Model"))
+                    routerInfo.model = value;
+                if (name.equals("Firmware Version"))
+                    routerInfo.firmwareVersion = value;
+                if (name.equals("MAC address"))
+                    routerInfo.Mac = value;
+                if (name.equals("Firmware Date"))
+                    routerInfo.firmwareDate = value;
+            }
+
+            return routerInfo;
+        }
+
 
     public static void main(String[] args) {
         try {
 
+
             RouterCommands router = new RouterCommands("192.168.1.1", "!!Huawei", "@HuaweiHgw");
 
-            boolean result = router.ping("192.168.1.1");
+            //boolean result = router.ping("192.168.1.1");
 
-            System.out.println("this is router output: " + result);
+            //System.out.println("this is router output: " + result);
 
-            boolean result2 = router.set("1","woody", "1", "wpa2", "psk", "woody12345", true);
-            System.out.println("this is router output (true): " + result2);
+            //boolean result2 = router.set("1","woody", "1", "wpa2", "psk", "woody12345", true);
+            //boolean result2 = router.firewall ("off");
+            //System.out.println("this is router output: " + result2);
+
+
+           RouterInfo result = router.displayInfo();
+            System.out.println("this is router info " + result.firmwareDate + "\n" + result.Mac + "\n" + result.firmwareVersion + "\n" + result.model);
 
 
         } catch (Exception e) {
