@@ -49,6 +49,12 @@ public class RouterCommands {
         catch (Exception e) {}
         return true;
     }
+    public boolean dhcp(String startip, String endip) {
+        String result = telnet.sendCommand("set dhcppool " + startip + " " + endip);
+        if (result.contains("Fail"))
+            return false;
+        return true;
+    }
      public boolean set(String index, String ssid, String channel, String beacon, String auth, String key, Boolean en){
         String result;
         if (en)
@@ -59,16 +65,15 @@ public class RouterCommands {
              return true;
 
          return false;
-        }
+    }
 
-        public boolean firewall (String level) {
+    public boolean firewall (String level) {
             String result = telnet.sendCommand("set firewall " + level);
                     if (result.contains("Fail"))
                         return false;
             return true;
-        }
-
-        public  RouterInfo displayInfo() {
+    }
+    public  RouterInfo displayInfo() {
 
             String result = telnet.sendCommand("display deviceinfo");
             Pattern pattern = Pattern.compile("(.+):\\s+(.+)");
@@ -91,9 +96,9 @@ public class RouterCommands {
             }
 
             return routerInfo;
-        }
+    }
 
-        public DSLinfo displayDSL() {
+    public DSLinfo displayDSL() {
             String result = telnet.sendCommand("display dsl");
             Pattern pattern = Pattern.compile("(.+):\\s+(.+)");
             Matcher matcher = pattern.matcher(result);
@@ -121,7 +126,9 @@ public class RouterCommands {
                     dsLinfo.DownAtten = value;
             }
             return dsLinfo;
-        }
+    }
+
+
 
     public static void main(String[] args) {
         try {
@@ -138,8 +145,8 @@ public class RouterCommands {
             //System.out.println("this is router output: " + result2);
 
 
-           DSLinfo result = router.displayDSL();
-            System.out.println("this is router info " + result.Status + "\n" + result.UpRate + "\n" + result.DownRate + "\n" + result.UpNoise);
+           //DSLinfo result = router.displayDSL();
+            //System.out.println("this is router info " + result.Status + "\n" + result.UpRate + "\n" + result.DownRate + "\n" + result.UpNoise);
 
 
         } catch (Exception e) {
