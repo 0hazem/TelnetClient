@@ -93,6 +93,35 @@ public class RouterCommands {
             return routerInfo;
         }
 
+        public DSLinfo displayDSL() {
+            String result = telnet.sendCommand("display dsl");
+            Pattern pattern = Pattern.compile("(.+):\\s+(.+)");
+            Matcher matcher = pattern.matcher(result);
+            DSLinfo dsLinfo = new DSLinfo();
+            while (matcher.find()) {
+                String name = matcher.group(1);
+                String value = matcher.group(2);
+                System.out.println(name + " ==== " + name);
+
+                if (name.equals("Status"))
+                    dsLinfo.Status = value;
+                if (name.equals("ModulationType"))
+                    dsLinfo.Modulation = value;
+                if (name.equals("UpStreamCurrRate"))
+                    dsLinfo.UpRate = value;
+                if (name.equals("DownStreamCurrRate"))
+                    dsLinfo.DownRate = value;
+                if (name.equals("UpStreamNoiseMargin"))
+                    dsLinfo.UpNoise = value;
+                if (name.equals("DownStreamNoiseMargin"))
+                    dsLinfo.DownNoise = value;
+                if (name.equals("UpStreamAttenuation"))
+                    dsLinfo.UpAtten = value;
+                if (name.equals("DownStreamAttenuation"))
+                    dsLinfo.DownAtten = value;
+            }
+            return dsLinfo;
+        }
 
     public static void main(String[] args) {
         try {
@@ -109,8 +138,8 @@ public class RouterCommands {
             //System.out.println("this is router output: " + result2);
 
 
-           RouterInfo result = router.displayInfo();
-            System.out.println("this is router info " + result.firmwareDate + "\n" + result.Mac + "\n" + result.firmwareVersion + "\n" + result.model);
+           DSLinfo result = router.displayDSL();
+            System.out.println("this is router info " + result.Status + "\n" + result.UpRate + "\n" + result.DownRate + "\n" + result.UpNoise);
 
 
         } catch (Exception e) {
