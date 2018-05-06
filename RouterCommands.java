@@ -66,7 +66,11 @@ public class RouterCommands {
 
          return false;
     }
-
+    public char trace (String ip) {
+        String result = telnet.sendCommand("tracert " + ip);
+        String[] lines = result.split("\n");
+        return (lines[lines.length -2].charAt(2));
+    }
     public boolean firewall (String level) {
             String result = telnet.sendCommand("set firewall " + level);
                     if (result.contains("Fail"))
@@ -143,7 +147,8 @@ public class RouterCommands {
             //boolean result2 = router.set("1","woody", "1", "wpa2", "psk", "woody12345", true);
             //boolean result2 = router.firewall ("off");
             //System.out.println("this is router output: " + result2);
-
+            char result = router.trace("192.168.1.2");
+            System.out.println("This is router output " + result);
 
            //DSLinfo result = router.displayDSL();
             //System.out.println("this is router info " + result.Status + "\n" + result.UpRate + "\n" + result.DownRate + "\n" + result.UpNoise);
